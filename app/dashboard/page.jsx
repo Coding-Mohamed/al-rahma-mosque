@@ -4,7 +4,7 @@
 // ============================================
 "use client";
 import { useState, useEffect } from "react";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth";
 import { collection, addDoc, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 
@@ -14,6 +14,11 @@ export default function DashboardPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  // Password reset state
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
 
   // Hero slides state
   const [slides, setSlides] = useState([]);
@@ -88,6 +93,31 @@ export default function DashboardPage() {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
       setError("Fel email eller lösenord!");
+    }
+  };
+
+  // Password reset function
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    setError("");
+    setResetMessage("");
+
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setResetMessage("✅ Återställningslänk skickad till din email!");
+      setResetEmail("");
+
+      // Auto-switch back to login after 3 seconds
+      setTimeout(() => {
+        setShowResetForm(false);
+        setResetMessage("");
+      }, 3000);
+    } catch (err) {
+      if (err.code === "auth/user-not-found") {
+        setError("❌ Ingen admin hittades med denna email");
+      } else {
+        setError("❌ Kunde inte skicka återställningslänk");
+      }
     }
   };
 
@@ -360,20 +390,59 @@ export default function DashboardPage() {
       <div className="max-w-md mx-auto mt-20">
         <div className="bg-white shadow-lg rounded-lg p-8">
           <h1 className="text-3xl font-bold text-primary mb-6 text-center">🔐 Admin Inloggning</h1>
+
           {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" placeholder="admin@alrahma.se" required />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Lösenord</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required />
-            </div>
-            <button type="submit" className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-accent transition-colors">
-              Logga In
-            </button>
-          </form>
+
+          {resetMessage && <div className="bg-green-100 text-green-700 p-3 rounded mb-4">{resetMessage}</div>}
+
+          {!showResetForm ? (
+            // Login Form
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Email</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" placeholder="admin@alrahmamoske.se" required />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Lösenord</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" required />
+              </div>
+
+              <button type="submit" className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-accent transition-colors">
+                Logga In
+              </button>
+
+              {/* Forgot Password Link */}
+              <button type="button" onClick={() => setShowResetForm(true)} className="w-full text-primary text-sm hover:underline">
+                Glömt lösenord?
+              </button>
+            </form>
+          ) : (
+            // Password Reset Form
+            <form onSubmit={handlePasswordReset} className="space-y-4">
+              <p className="text-sm text-gray-600 mb-4">Ange din email så skickar vi en återställningslänk</p>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Email</label>
+                <input type="email" value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" placeholder="admin@alrahmamoske.se" required />
+              </div>
+
+              <button type="submit" className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-accent transition-colors">
+                Skicka Återställningslänk
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowResetForm(false);
+                  setError("");
+                }}
+                className="w-full text-gray-600 text-sm hover:underline"
+              >
+                ← Tillbaka till inloggning
+              </button>
+            </form>
+          )}
         </div>
       </div>
     );
