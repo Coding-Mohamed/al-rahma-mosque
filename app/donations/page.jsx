@@ -133,7 +133,7 @@ export default function DonationsPage() {
 
             {/* Why Donate */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-primary mb-4">💚 Varför donera?</h3>
+              <h3 className="text-xl font-bold text-primary mb-4">Varför donera?</h3>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-3">
                   <span className="text-accent text-xl">✓</span>
@@ -159,15 +159,15 @@ export default function DonationsPage() {
               <h3 className="text-xl font-bold text-primary mb-4">📋 Typer av donationer</h3>
               <div className="space-y-3">
                 <div className="p-3 bg-lighter rounded-lg border-l-4 border-primary">
-                  <h4 className="font-bold text-primary mb-1">💰 Zakat (2.5%)</h4>
+                  <h4 className="font-bold text-primary mb-1">Zakat (2.5%)</h4>
                   <p className="text-sm text-gray-600">Obligatorisk välgörenhet för muslimer</p>
                 </div>
                 <div className="p-3 bg-lighter rounded-lg border-l-4 border-accent">
-                  <h4 className="font-bold text-primary mb-1">❤️ Sadaqa</h4>
+                  <h4 className="font-bold text-primary mb-1">Sadaqa</h4>
                   <p className="text-sm text-gray-600">Frivillig välgörenhet för Allahs skull</p>
                 </div>
                 <div className="p-3 bg-lighter rounded-lg border-l-4 border-primary">
-                  <h4 className="font-bold text-primary mb-1">🕌 Allmän donation</h4>
+                  <h4 className="font-bold text-primary mb-1">Allmän donation</h4>
                   <p className="text-sm text-gray-600">Stöd moskéns allmänna verksamhet</p>
                 </div>
               </div>
@@ -175,7 +175,7 @@ export default function DonationsPage() {
 
             {/* Contact */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-primary mb-4">❓ Frågor?</h3>
+              <h3 className="text-xl font-bold text-primary mb-4">Frågor?</h3>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <span>📧</span>

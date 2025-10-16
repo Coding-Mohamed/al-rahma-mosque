@@ -63,7 +63,7 @@ export default function GalleryPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">📸 Galleri</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">Galleri</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">Bilder från moskéns aktiviteter, evenemang och gemenskap</p>
       </div>
 
@@ -98,9 +98,9 @@ export default function GalleryPage() {
               </div>
 
               {/* Info Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 group-hover:opacity-100 transition-opacity">
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                  <h3 className="font-bold text-lg mb-1">{photo.title}</h3>
+                  <h3 className="font-bold text-lg mb-1 ">{photo.title}</h3>
                   {photo.description && <p className="text-sm text-white/90 line-clamp-2">{photo.description}</p>}
                   <span className="inline-block mt-2 text-xs bg-white/20 px-2 py-1 rounded">{photo.category}</span>
                 </div>

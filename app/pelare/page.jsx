@@ -82,7 +82,7 @@ export default function PelarePage({ showCTA = true }) {
       {showCTA && (
         <div className="bg-gradient-to-br from-primary to-accent text-white py-16 px-4 rounded-2xl">
           <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">🕌 Islams Fem Pelare</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Islams Fem Pelare</h1>
             <p className="text-lg md:text-xl opacity-90 max-w-3xl mx-auto">De grundläggande principerna som utgör grunden för muslimsk tro och praktik</p>
           </div>
         </div>
@@ -215,10 +215,10 @@ export default function PelarePage({ showCTA = true }) {
             <p className="text-lg mb-6 opacity-90">Besök Al-Rahma moské för djupare studier och vägledning</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="/contact" className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-                📍 Kontakta oss
+                Kontakta oss
               </a>
               <a href="/donations" className="bg-accent text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-600 transition">
-                💝 Stöd moskén
+                Stöd moskén
               </a>
             </div>
           </div>
