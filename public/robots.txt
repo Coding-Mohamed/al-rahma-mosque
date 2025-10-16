@@ -1,0 +1,13 @@
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Disallow admin pages and sensitive areas
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /api/
+Disallow: /_next/
+Disallow: /test/
+
+# Sitemap
+Sitemap: https://alrahmamoske.se/sitemap.xml
