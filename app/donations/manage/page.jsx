@@ -1,10 +1,10 @@
 // app/donations/manage/page.jsx
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function ManageSubscriptionPage() {
+function ManageSubscriptionContent() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [newAmount, setNewAmount] = useState("");
@@ -242,5 +242,28 @@ export default function ManageSubscriptionPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component
+function LoadingManagePage() {
+  return (
+    <div className="min-h-screen bg-lighter py-12">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Laddar...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main component wrapped with Suspense
+export default function ManageSubscriptionPage() {
+  return (
+    <Suspense fallback={<LoadingManagePage />}>
+      <ManageSubscriptionContent />
+    </Suspense>
   );
 }
