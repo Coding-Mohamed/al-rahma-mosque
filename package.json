@@ -10,12 +10,14 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@stripe/stripe-js": "^8.1.0",
     "cloudinary": "^2.7.0",
     "firebase": "^12.4.0",
     "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-hook-form": "^7.65.0"
+    "react-hook-form": "^7.65.0",
+    "stripe": "^19.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

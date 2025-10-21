@@ -4,10 +4,25 @@
 // Now supports hiding CTA when embedded in homepage
 // ============================================
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function PelarePage({ showCTA = true }) {
   const [selectedPillar, setSelectedPillar] = useState(null);
+
+  // Scroll to detailed view when a pillar is selected
+  useEffect(() => {
+    if (selectedPillar) {
+      const detailSection = document.getElementById("pillar-detail");
+      if (detailSection) {
+        setTimeout(() => {
+          detailSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }, 100);
+      }
+    }
+  }, [selectedPillar]);
 
   // Five Pillars with all information
   const pillars = [
@@ -125,11 +140,17 @@ export default function PelarePage({ showCTA = true }) {
 
         {/* Detailed View */}
         {selectedPillar && (
-          <div className="mb-12 animate-fade-in">
+          <div id="pillar-detail" className="mb-12 animate-fade-in">
             {pillars
               .filter((p) => p.id === selectedPillar)
               .map((pillar) => (
                 <div key={pillar.id} className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                  {/* Close button for mobile */}
+                  <div className="lg:hidden bg-primary text-white p-4 text-center">
+                    <button onClick={() => setSelectedPillar(null)} className="text-white hover:text-gray-200 font-semibold">
+                      ✕ Stäng
+                    </button>
+                  </div>
                   {/* Header with Image Background */}
                   <div className="relative h-64 md:h-80">
                     <img src={pillar.image} alt={pillar.nameSwedish} className="absolute inset-0 w-full h-full object-cover" />

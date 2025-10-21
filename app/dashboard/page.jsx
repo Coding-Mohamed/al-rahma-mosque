@@ -32,6 +32,7 @@ export default function DashboardPage() {
     active: true,
     type: "image", // "image", "announcement", or "video"
     videoUrl: "", // For YouTube links
+    link: "", // For external links (non-YouTube)
   });
   const [imageFile, setImageFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -174,14 +175,11 @@ export default function DashboardPage() {
         imageUrl = await uploadToCloudinary(imageFile);
       }
 
-      // Extract YouTube video ID if type is "video"
-      let processedVideoUrl = formData.videoUrl;
+      // Handle YouTube links - save in link field for HeroCarousel compatibility
+      let finalLink = formData.link || "";
       if (formData.type === "video" && formData.videoUrl) {
-        // Convert YouTube URL to embed format
-        const videoId = extractYouTubeId(formData.videoUrl);
-        if (videoId) {
-          processedVideoUrl = `https://www.youtube.com/embed/${videoId}`;
-        }
+        // For video type, save YouTube URL in link field (not videoUrl)
+        finalLink = formData.videoUrl;
       }
 
       const slideData = {
@@ -191,7 +189,8 @@ export default function DashboardPage() {
         order: Number(formData.order),
         active: formData.active,
         type: formData.type,
-        videoUrl: processedVideoUrl || "",
+        videoUrl: "", // Keep empty - HeroCarousel uses link field for YouTube
+        link: finalLink, // YouTube links go here for proper detection
       };
 
       if (editingSlide) {
@@ -210,6 +209,7 @@ export default function DashboardPage() {
         active: true,
         type: "image",
         videoUrl: "",
+        link: "", // Reset link field
       });
       setImageFile(null);
       setEditingSlide(null);
@@ -241,7 +241,10 @@ export default function DashboardPage() {
       order: slide.order,
       active: slide.active,
       type: slide.type || "image",
-      videoUrl: slide.videoUrl || "",
+      // For video slides, load YouTube URL from link field, not videoUrl
+      videoUrl: slide.type === "video" ? slide.link || "" : "",
+      // For non-video slides, load external link
+      link: slide.type !== "video" ? slide.link || "" : "",
     });
   };
 
@@ -264,6 +267,7 @@ export default function DashboardPage() {
       active: true,
       type: "image",
       videoUrl: "",
+      link: "", // Reset link field in cancel
     });
     setImageFile(null);
   };
@@ -573,6 +577,21 @@ export default function DashboardPage() {
                     <br />• VIDEO_ID (bara ID:t)
                   </p>
                   {formData.videoUrl && extractYouTubeId(formData.videoUrl) && <p className="text-sm text-green-600 mt-2">✅ Giltig YouTube video ID: {extractYouTubeId(formData.videoUrl)}</p>}
+                </div>
+              )}
+
+              {/* External Link (for all types except video) */}
+              {formData.type !== "video" && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Extern Länk (valfri)</label>
+                  <input type="url" value={formData.link} onChange={(e) => setFormData({ ...formData, link: e.target.value })} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-primary" placeholder="https://example.com/event-registration" />
+                  <p className="text-xs text-gray-500 mt-1">
+                    🔗 Lägg till extern länk (ex: anmälan, Facebook-event, webbsida)
+                    <br />
+                    • Lämna tom för vanlig annons
+                    <br />• Användare kan klicka på slide för att öppna länken
+                  </p>
+                  {formData.link && <p className="text-sm text-blue-600 mt-2">🔗 Länk kommer att öppnas i nytt fönster</p>}
                 </div>
               )}
 

@@ -1,39 +1,34 @@
 // app/donations/page.jsx
-// Donations - Clean, simple with QR code
-// ============================================
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function DonationsPage() {
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState("");
 
-  // ========== CUSTOMIZE THESE VALUES ==========
-  const SWISH_NUMBER = "1231553262"; // ← Change to your Swish number
-  const BANKGIRO = "5717-3809"; // ← Change to your Bankgiro
+  // ========== CONFIGURATION ==========
+  const SWISH_NUMBER = "1231553262";
+  const BANKGIRO = "5717-3809";
   const MOSQUE_NAME = "Al-Rahma Moské";
-
-  // Quick amount buttons
   const quickAmounts = [100, 250, 500, 1000, 2500];
-  // ==========================================
+  // ===================================
 
   const getCurrentAmount = () => customAmount || selectedAmount || 0;
 
   const handleDonate = () => {
     const amount = getCurrentAmount();
-    if (!amount) {
-      alert("Välj eller ange ett belopp först");
+    if (!amount || amount < 10) {
+      alert("Välj eller ange ett belopp (minst 10 kr)");
       return;
     }
 
-    // Swish deep link
     const message = `${MOSQUE_NAME} - Donation`;
     const swishUrl = `swish://payment?phone=${SWISH_NUMBER}&amount=${amount}&message=${encodeURIComponent(message)}`;
 
     window.location.href = swishUrl;
 
-    // Fallback instructions
     setTimeout(() => {
       alert(`Om Swish inte öppnades:\n\n` + `Swish till: ${SWISH_NUMBER}\n` + `Belopp: ${amount} kr\n` + `Meddelande: ${message}`);
     }, 2000);
@@ -50,10 +45,23 @@ export default function DonationsPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
+        {/* Monthly Donation Banner */}
+        <div className="mb-8 bg-gradient-to-r from-accent to-primary text-white rounded-xl p-6 shadow-lg">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h3 className="text-xl font-bold mb-2">Månatlig donation</h3>
+              <p className="text-sm opacity-90">Stöd moskén automatiskt varje månad med kort</p>
+            </div>
+            <Link href="/donations/monthly" className="bg-white text-primary px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition">
+              Sätt upp månatlig donation →
+            </Link>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left: Donation Form */}
+          {/* Left: One-time Donation Form */}
           <div className="bg-white rounded-2xl shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-primary mb-6">Välj belopp</h2>
+            <h2 className="text-2xl font-bold text-primary mb-6">Engångsgåva</h2>
 
             {/* Quick Amounts */}
             <div className="grid grid-cols-3 gap-3 mb-6">
@@ -112,15 +120,47 @@ export default function DonationsPage() {
                 <strong>Mottagare:</strong> {MOSQUE_NAME}
               </p>
             </div>
+
+            {/* Organization Info */}
+            <div className="mt-6 bg-white rounded-xl shadow-lg p-6 ">
+              <p className="text-sm text-gray-600 mb-2">
+                <strong>{MOSQUE_NAME}</strong> är en registrerad religiös organisation.
+              </p>
+              <p className="text-sm text-gray-600 mb-4">Alla donationer används transparent för moskéns verksamhet och välgörenhet.</p>
+
+              <div className="pt-4 border-t border-gray-200">
+                <Link href="/donations/manage" className="text-primary hover:underline text-sm">
+                  Hantera månatlig donation →
+                </Link>
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div className="mt-16 bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-primary mb-4">Frågor?</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center gap-2">
+                  <span>📧</span>
+                  <span>info@alrahmamoske.se</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>📞</span>
+                  <span>+46 737739772</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span>💵</span>
+                  <span>Kontant: Vid moskén efter bönen</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
           {/* Right: QR Code & Info */}
           <div className="space-y-6">
-            {/* QR Code - Using your image from public folder */}
+            {/* QR Code */}
             <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
               <h3 className="text-xl font-bold text-primary mb-4">📱 Scanna med Swish</h3>
 
-              {/* Your QR Code Image */}
               <div className="flex justify-center mb-4">
                 <div className="relative w-64 h-64 bg-lighter rounded-xl p-4 border-4 border-primary">
                   <Image src="/QR-code.png" alt="Swish QR Code" fill className="object-contain p-2" priority />
@@ -172,34 +212,7 @@ export default function DonationsPage() {
                 </div>
               </div>
             </div>
-
-            {/* Contact */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="text-xl font-bold text-primary mb-4">Frågor?</h3>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <span>📧</span>
-                  <span>info@alrahmamoske.se</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span>📞</span>
-                  <span>+46 737739772</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <span>💵</span>
-                  <span>Kontant: Vid moskén efter bönen</span>
-                </li>
-              </ul>
-            </div>
           </div>
-        </div>
-
-        {/* Footer Note */}
-        <div className="mt-8 text-center text-sm text-gray-600 bg-white p-6 rounded-lg shadow-md">
-          <p className="mb-2">
-            <strong>{MOSQUE_NAME}</strong> är en registrerad religiös organisation.
-          </p>
-          <p>Alla donationer används transparent för moskéns verksamhet och välgörenhet.</p>
         </div>
       </div>
     </div>
