@@ -42,7 +42,7 @@ export default function Services() {
     },
     {
       icon: "💍",
-      title: "Nikah/Vigselbevis",
+      title: "Nikkah/Vigselbevis",
       description: "Islamiska vigslar och vigselbevis enligt islamisk sed.",
     },
   ];

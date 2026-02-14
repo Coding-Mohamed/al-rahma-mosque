@@ -54,7 +54,7 @@ export default function ContactPage() {
     { id: "general", name: "Allmän fråga" },
     { id: "religious", name: "Religiös rådgivning" },
     { id: "education", name: "Koranskola/Utbildning" },
-    { id: "marriage", name: "Äktenskap/Nikah" },
+    { id: "marriage", name: "Äktenskap/Nikkah" },
     { id: "funeral", name: "Begravning" },
     { id: "donation", name: "Donationer" },
     { id: "event", name: "Evenemang/Bokning" },
@@ -90,7 +90,14 @@ export default function ContactPage() {
       // Send email via EmailJS
       const response = await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
-      console.log("Email sent successfully:", response);
+      // Development-only logging (avoid leaking response details in production)
+      if (process.env.NODE_ENV === "development") {
+        try {
+          console.log("Email sent successfully:", { status: response.status || "ok" });
+        } catch (e) {
+          // swallow logging errors
+        }
+      }
       setSubmitStatus("success");
       reset(); // Clear form
 

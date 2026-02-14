@@ -4,6 +4,7 @@
 // ============================================
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 export default function Header() {
@@ -15,7 +16,7 @@ export default function Header() {
         <div className="flex justify-between items-center">
           {/* Logo - Gold/Accent color for contrast */}
           <Link href="/" className="text-2xl font-bold text-accent hover:text-white transition-colors flex items-center gap-2">
-            <span className="text-3xl">🕌</span>
+            <Image src="/android-chrome-192x192.png" alt="Al-Rahma Moské Logo" width={32} height={32} className="rounded-lg" />
             <span>Al-Rahma</span>
           </Link>
 

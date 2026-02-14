@@ -135,8 +135,10 @@ export default function DashboardPage() {
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
-    console.log("☁️ Uploading to Cloudinary...");
-    console.log("📸 File:", file.name, file.type, (file.size / 1024 / 1024).toFixed(2), "MB");
+    if (process.env.NODE_ENV === "development") {
+      console.log("☁️ Uploading to Cloudinary...");
+      console.log("📸 File:", { name: file.name, type: file.type, sizeMB: (file.size / 1024 / 1024).toFixed(2) });
+    }
 
     const formData = new FormData();
     formData.append("file", file);
@@ -154,7 +156,9 @@ export default function DashboardPage() {
       }
 
       const data = await response.json();
-      console.log("✅ Cloudinary upload success:", data.secure_url);
+      if (process.env.NODE_ENV === "development") {
+        console.log("✅ Cloudinary upload success:", { url: data.secure_url });
+      }
       return data.secure_url;
     } catch (err) {
       console.error("❌ Cloudinary error:", err);

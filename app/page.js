@@ -23,7 +23,7 @@ export default function HomePage() {
         <div className="w-full" style={{ height: "500px" }}>
           {/* Embedded prayer times from my-masjid.com */}
           {/* TODO: Later replace with direct API integration for better customization */}
-          <iframe src="https://time.my-masjid.com/timingscreen/3b4986ae-db53-4d4c-9362-ae73ecc65d86" className="w-full h-full rounded-lg border-2 border-primary" title="Prayer Times" allowFullScreen />
+          <iframe src="https://time.my-masjid.com/timingscreen/81adfa5a-7f78-4527-898f-ce8610b13a9b" className="w-full h-full rounded-lg border-2 border-primary" title="Prayer Times" allowFullScreen />
         </div>
         <p className="text-sm text-gray-600 text-center mt-4">Live bönetider uppdateras automatiskt</p>
       </div>

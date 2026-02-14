@@ -34,6 +34,10 @@ export default function CalendarSection() {
         const hijri = data.data.hijri;
         const gregorian = data.data.gregorian;
 
+        // Debug: Log the API response to understand exact month names
+        console.log("Hijri month from API:", hijri.month.en);
+        console.log("Full hijri data:", hijri);
+
         setCurrentDate({
           gregorian: `${gregorian.day} ${gregorian.month.en} ${gregorian.year}`,
           islamic: `${hijri.day} ${hijri.month.ar} ${hijri.year}`,
@@ -59,20 +63,20 @@ export default function CalendarSection() {
     }
   };
 
-  // Islamic months in order
+  // Islamic months in order - using same names as API for proper matching
   const islamicMonths = [
     { name: "Muharram", number: 1 },
     { name: "Safar", number: 2 },
-    { name: "Rabi al-Awwal", number: 3 },
-    { name: "Rabi al-Thani", number: 4 },
-    { name: "Jumada al-Awwal", number: 5 },
-    { name: "Jumada al-Thani", number: 6 },
+    { name: "Rabī' al-awwal", number: 3 },
+    { name: "Rabī' al-thānī", number: 4 },
+    { name: "Jumādá al-ūlá", number: 5 },
+    { name: "Jumādá al-ākhirah", number: 6 },
     { name: "Rajab", number: 7 },
-    { name: "Shaban", number: 8 },
-    { name: "Ramadan", number: 9 },
-    { name: "Shawwal", number: 10 },
-    { name: "Dhul Qadah", number: 11 },
-    { name: "Dhul Hijjah", number: 12 },
+    { name: "Sha'bān", number: 8 },
+    { name: "Ramaḍān", number: 9 },
+    { name: "Shawwāl", number: 10 },
+    { name: "Dhū al-Qa'dah", number: 11 },
+    { name: "Dhū al-Ḥijjah", number: 12 },
   ];
 
   return (
@@ -113,14 +117,18 @@ export default function CalendarSection() {
         <div className="mb-8">
           <h3 className="text-2xl font-bold text-primary text-center mb-6">Islamiska Månader</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {islamicMonths.map((month) => (
-              <div key={month.number} className={`p-4 rounded-lg text-center transition-all hover:scale-105 ${currentDate.hijriMonth === month.name ? "bg-gradient-to-br from-primary to-accent text-white shadow-lg" : "bg-lighter hover:bg-gray-200"}`}>
-                <div className="text-2xl mb-2">{month.icon}</div>
-                <div className={`text-sm font-semibold mb-1 ${currentDate.hijriMonth === month.name ? "text-white" : "text-primary"}`}>{month.name}</div>
-                <div className={`text-xs ${currentDate.hijriMonth === month.name ? "text-white opacity-90" : "text-gray-600"}`}>Månad {month.number}</div>
-                {currentDate.hijriMonth === month.name && <div className="mt-2 text-xs bg-white/20 px-2 py-1 rounded">Aktuell</div>}
-              </div>
-            ))}
+            {islamicMonths.map((month) => {
+              // More flexible matching to handle different transliterations
+              const isCurrentMonth = currentDate.hijriMonth === month.name || (month.number === 5 && (currentDate.hijriMonth === "Jumada al-Awwal" || currentDate.hijriMonth === "Jumādá al-ūlá")) || (month.number === 6 && (currentDate.hijriMonth === "Jumada al-Thani" || currentDate.hijriMonth === "Jumādá al-ākhirah"));
+
+              return (
+                <div key={month.number} className={`p-4 rounded-lg text-center transition-all hover:scale-105 ${isCurrentMonth ? "bg-gradient-to-br from-primary to-accent text-white shadow-lg" : "bg-lighter hover:bg-gray-200"}`}>
+                  <div className={`text-sm font-semibold mb-1 ${isCurrentMonth ? "text-white" : "text-primary"}`}>{month.name}</div>
+                  <div className={`text-xs ${isCurrentMonth ? "text-white opacity-90" : "text-gray-600"}`}>Månad {month.number}</div>
+                  {/* {isCurrentMonth && <div className="mt-2 text-xs bg-white/20 px-2 py-1 rounded">Aktuell</div>} */}
+                </div>
+              );
+            })}
           </div>
         </div>
 
