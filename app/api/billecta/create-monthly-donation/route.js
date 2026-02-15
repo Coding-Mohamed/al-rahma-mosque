@@ -10,6 +10,16 @@ const BILLECTA_CONFIG = {
   creditorPublicId: process.env.BILLECTA_CREDITOR_ID,
   monthlyDonationProductId: process.env.BILLECTA_MONTHLY_PRODUCT_ID,
 };
+// TEMPORARY DEBUG - DELETE AFTER FIXING!
+console.log("[DEBUG] Vercel Environment Check:");
+console.log("  NODE_ENV:", process.env.NODE_ENV);
+console.log("  Base URL:", BILLECTA_CONFIG.baseUrl);
+console.log("  Username exists:", !!BILLECTA_CONFIG.username);
+console.log("  Username value:", BILLECTA_CONFIG.username ? "SET (length: " + BILLECTA_CONFIG.username.length + ")" : "MISSING!");
+console.log("  Password exists:", !!BILLECTA_CONFIG.password);
+console.log("  Password value:", BILLECTA_CONFIG.password ? "SET (length: " + BILLECTA_CONFIG.password.length + ")" : "MISSING!");
+console.log("  Creditor exists:", !!BILLECTA_CONFIG.creditorPublicId);
+console.log("  Product exists:", !!BILLECTA_CONFIG.monthlyDonationProductId);
 
 // =============================================================================
 // SÄKERHETSFUNKTIONER
