@@ -4,7 +4,7 @@
 import { NextResponse } from "next/server";
 
 const BILLECTA_CONFIG = {
-  baseUrl: "https://apitest.billecta.com",
+  baseUrl: process.env.NODE_ENV === "production" ? "https://api.billecta.com" : "https://apitest.billecta.com",
   username: process.env.BILLECTA_USERNAME,
   password: process.env.BILLECTA_PASSWORD,
 };
