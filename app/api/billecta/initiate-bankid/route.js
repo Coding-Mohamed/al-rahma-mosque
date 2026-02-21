@@ -1,5 +1,4 @@
-// app/api/billecta/initiate-bankid/route.js
-// Initiates BankID signing for Autogiro approval
+// // app/api/billecta/initiate-bankid/route.js
 
 import { NextResponse } from "next/server";
 
@@ -18,40 +17,43 @@ export async function POST(request) {
   try {
     const { contractInvoiceId, personalNumber } = await request.json();
 
+    const requestBody = {
+      CreditorPublicId: process.env.BILLECTA_CREDITOR_ID,
+      SSN: personalNumber, // ✅ was PersonalNumber
+      UserMessage: `Jag godkanner autogiro for avtalsfaktura ${contractInvoiceId}`, // ✅ was UserVisibleData + base64
+      UserNonVisibleData: null,
+      ReturnUrl: null,
+    };
+
     console.log("\n[BANKID] Initiating BankID signing...");
     console.log("  Contract Invoice ID:", contractInvoiceId);
-    console.log("  Personal Number:", personalNumber);
+    console.log("  SSN:", personalNumber);
 
-    // Initiate BankID signing via Billecta API
     const response = await fetch(`${BILLECTA_CONFIG.baseUrl}/v1/bankid/sign`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         Authorization: getAuthHeader(),
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      body: JSON.stringify({
-        PersonalNumber: personalNumber,
-        EndUserIp: "127.0.0.1", // In production, get real IP
-        UserVisibleData: Buffer.from(`Jag godkänner autogiro för avtalsfaktura ${contractInvoiceId}`).toString("base64"),
-      }),
+      body: JSON.stringify(requestBody),
     });
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.log("  ✗ BankID initiation failed:", response.status);
-      console.log("  Error:", errorText);
-      throw new Error(`BankID initiation failed: ${errorText}`);
+      console.log("  ✗ BankID initiation failed:", response.status, responseText);
+      throw new Error(`BankID initiation failed: ${responseText}`);
     }
 
-    const data = await response.json();
-    console.log("  ✓ BankID initiated successfully");
-    console.log("  Reference Token:", data.ReferenceToken);
+    const data = JSON.parse(responseText);
+    console.log("  ✓ BankID initiated, ReferenceToken:", data.ReferenceToken);
 
     return NextResponse.json({
       success: true,
       referenceToken: data.ReferenceToken,
       autoStartToken: data.AutoStartToken,
-      qrCodeData: data.QrCodeData,
+      qrCodeData: data.QR, // ✅ was data.QrCodeData, and it's a full data URL
     });
   } catch (error) {
     console.error("\n[BANKID ERROR]", error.message);

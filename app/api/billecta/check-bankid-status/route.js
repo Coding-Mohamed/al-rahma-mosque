@@ -1,6 +1,5 @@
 // app/api/billecta/check-bankid-status/route.js
-// Polls BankID signing status
-
+// TEMP DEBUG VERSION - log full raw response to see what Billecta actually returns
 import { NextResponse } from "next/server";
 
 const BILLECTA_CONFIG = {
@@ -18,31 +17,56 @@ export async function POST(request) {
   try {
     const { referenceToken } = await request.json();
 
-    console.log("\n[BANKID] Checking status...");
-    console.log("  Reference Token:", referenceToken);
-
-    // Check BankID status via Billecta API
     const response = await fetch(`${BILLECTA_CONFIG.baseUrl}/v1/bankid/sign/${referenceToken}`, {
       method: "GET",
       headers: {
         Authorization: getAuthHeader(),
-        "Content-Type": "application/json",
+        Accept: "application/json",
       },
     });
 
+    const raw = await response.text();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.log("  ✗ Status check failed:", response.status);
-      throw new Error(`Status check failed: ${errorText}`);
+      throw new Error(`Status check failed: ${raw}`);
     }
 
-    const data = await response.json();
-    console.log("  Status:", data.Status);
+    const data = JSON.parse(raw);
+
+    // Log every field
+    console.log("[BANKID FIELDS]", {
+      Status: data.Status,
+      HintCode: data.HintCode,
+      GivenName: data.GivenName,
+      Surname: data.Surname,
+      NotAfter: data.NotAfter,
+      Signature: data.Signature ? "present" : null,
+      OcspResponse: data.OcspResponse ? "present" : null,
+    });
+
+    // Map all possible Billecta statuses
+    let frontendStatus;
+    switch (data.Status) {
+      case "Complete":
+        frontendStatus = "Success";
+        break;
+      case "Failed":
+      case "Expired":
+        frontendStatus = data.Status;
+        break;
+      case "Started":
+      case "Pending":
+      default:
+        frontendStatus = "Pending";
+        break;
+    }
 
     return NextResponse.json({
       success: true,
-      status: data.Status,
+      status: frontendStatus,
+      rawStatus: data.Status, // ← send raw status to frontend too
       hintCode: data.HintCode,
+      qrCodeData: data.QR,
     });
   } catch (error) {
     console.error("\n[BANKID STATUS ERROR]", error.message);
